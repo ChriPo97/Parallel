@@ -2,6 +2,7 @@ package parallel;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import javax.imageio.ImageIO;
@@ -27,13 +28,11 @@ public class Parallel extends RecursiveAction {
     protected void computeDirectly() {
         for (int index = mStart; index < mStart + mLength; index++) {
             int pixel = mSource[index];
-            float alpha = (pixel >> 24) & 0xff;
             float red = (pixel >> 16) & 0xff;
             float green = (pixel >> 8) & 0xff;
             float blue = pixel & 0xff;
             float gray = (float) ((red * 0.21) + (green * 0.72) + (blue * 0.07));
-            int dpixel = ((int)alpha << 24)
-                    | (((int) gray) << 16)
+            int dpixel = (((int) gray) << 16)
                     | (((int) gray) << 8)
                     | (((int) gray));
             mDestination[index] = dpixel;
@@ -49,18 +48,18 @@ public class Parallel extends RecursiveAction {
         }
         int split = mLength / 2;
         invokeAll(new Parallel(mSource, mStart, split, mDestination),
-                new Parallel(mSource, mStart + split, mLength - split, 
-                mDestination));
+                new Parallel(mSource, mStart + split, mLength - split,
+                        mDestination));
     }
 
     public static void main(String[] args) throws Exception {
-        String srcName = "space.png";
+        String srcName = "world.jpg";
         File srcFile = new File(srcName);
         BufferedImage image = ImageIO.read(srcFile);  
-        BufferedImage blurredImage = gray(image);
-        String dstName = "space-gray.png";
+        BufferedImage grayImage = gray(image);
+        String dstName = "world-gray.jpg";
         File dstFile = new File(dstName);
-        ImageIO.write(blurredImage, "png", dstFile);
+        ImageIO.write(grayImage, "jpg", dstFile);
     }
 
     public static BufferedImage gray(BufferedImage srcImage) {
@@ -73,10 +72,10 @@ public class Parallel extends RecursiveAction {
         long startTime = System.currentTimeMillis();
         pool.invoke(fb);
         long endTime = System.currentTimeMillis();
-        System.out.println("Image blur took " + (endTime - startTime) + 
-                " milliseconds.");
-        BufferedImage dstImage =
-                new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        System.out.println("Graying took " + (endTime - startTime)
+                + " milliseconds.");
+        BufferedImage dstImage
+                = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
         return dstImage;
     }

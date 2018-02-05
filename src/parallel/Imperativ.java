@@ -17,13 +17,13 @@ public class Imperativ {
     private static int[] mDestination;
 
     public static void main(String[] args) throws IOException {
-        String srcName = "space.png";
+        String srcName = "world.jpg";
         File srcFile = new File(srcName);
         BufferedImage image = ImageIO.read(srcFile);
-        BufferedImage blurredImage = gray(image);
-        String dstName = "space-gray.png";
+        BufferedImage grayImage = gray(image);
+        String dstName = "world-gray.jpg";
         File dstFile = new File(dstName);
-        ImageIO.write(blurredImage, "png", dstFile);
+        ImageIO.write(grayImage, "jpg", dstFile);
     }
 
     private static BufferedImage gray(BufferedImage srcImage) {
@@ -38,10 +38,10 @@ public class Imperativ {
         long startTime = System.currentTimeMillis();
         computeDirectly();
         long endTime = System.currentTimeMillis();
-        System.out.println("Image blur took " + (endTime - startTime) + 
+        System.out.println("Graying took " + (endTime - startTime) + 
                 " milliseconds.");
         BufferedImage dstImage =
-                new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
         return dstImage;
     }
@@ -49,13 +49,11 @@ public class Imperativ {
     protected static void computeDirectly() {
         for (int index = mStart; index < mStart + mLength; index++) {
             int pixel = mSource[index];
-            float alpha = (pixel >> 24) & 0xff;
             float red = (pixel >> 16) & 0xff;
             float green = (pixel >> 8) & 0xff;
             float blue = pixel & 0xff;
             float gray = (float) ((red * 0.21) + (green * 0.72) + (blue * 0.07));
-            int dpixel = ((int)alpha << 24)
-                    | (((int) gray) << 16)
+            int dpixel = (((int) gray) << 16)
                     | (((int) gray) << 8)
                     | (((int) gray));
             mDestination[index] = dpixel;
