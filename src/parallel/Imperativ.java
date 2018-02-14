@@ -24,7 +24,7 @@ public class Imperativ {
         BufferedImage grayImage = gray(image);
         String dstName = "tiger-gray.jpg";
         File dstFile = new File(dstName);
-        ImageIO.write(grayImage, "jpg", dstFile);
+        ImageIO.write(grayImage, "jpg", dstFile);   //Also: "TIFF"
     }
 
     private static BufferedImage gray(BufferedImage srcImage) {

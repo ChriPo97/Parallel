@@ -3,6 +3,7 @@ package parallel;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import javax.imageio.ImageIO;
@@ -33,9 +34,13 @@ public class Parallel extends RecursiveAction {
             float blue = pixel & 0xff;
             float gray = (float) ((red * 0.21) + (green * 0.72) + (blue * 0.07));
             if (isPrime((int) (red * green * blue * gray))) {
-                int dpixel = ((255 << 16)
-                        | (0) << 8)
-                        | (0);
+                Random r = new Random();
+                int red1 = r.nextInt(256);
+                int green1 = r.nextInt(256);
+                int blue1 = r.nextInt(256);
+                int dpixel = ((red1 << 16)
+                        | (green1) << 8)
+                        | (blue1);
                 mDestination[index] = dpixel;
             } else {
                 int dpixel = (((int) gray) << 16)
@@ -60,13 +65,14 @@ public class Parallel extends RecursiveAction {
     }
 
     public static void main(String[] args) throws Exception {
-        String srcName = "world.jpg";
+        String srcName = "tiger.jpg";
         File srcFile = new File(srcName);
         BufferedImage image = ImageIO.read(srcFile);
+        System.out.println("Einlesen fertig");
         BufferedImage grayImage = gray(image);
-        String dstName = "world-gray.jpg";
+        String dstName = "tiger-gray.jpg";
         File dstFile = new File(dstName);
-        ImageIO.write(grayImage, "jpg", dstFile);
+        ImageIO.write(grayImage, "jpg", dstFile);   //Also: "TIFF"
     }
 
     public static BufferedImage gray(BufferedImage srcImage) {

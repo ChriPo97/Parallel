@@ -84,7 +84,7 @@ public class ParallelReady extends RecursiveAction {
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
         String dstName = "tiger-gray.jpg";
         File dstFile = new File(dstName);
-        ImageIO.write(dstImage, "jpg", dstFile);
+        ImageIO.write(dstImage, "jpg", dstFile);    //Also: "TIFF"
     }
 
     public static int[] gray(int[] src) {
