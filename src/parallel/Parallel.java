@@ -32,10 +32,17 @@ public class Parallel extends RecursiveAction {
             float green = (pixel >> 8) & 0xff;
             float blue = pixel & 0xff;
             float gray = (float) ((red * 0.21) + (green * 0.72) + (blue * 0.07));
-            int dpixel = (((int) gray) << 16)
-                    | (((int) gray) << 8)
-                    | (((int) gray));
-            mDestination[index] = dpixel;
+            if (isPrime((int) (red * green * blue * gray))) {
+                int dpixel = ((255 << 16)
+                        | (0) << 8)
+                        | (0);
+                mDestination[index] = dpixel;
+            } else {
+                int dpixel = (((int) gray) << 16)
+                        | (((int) gray) << 8)
+                        | (((int) gray));
+                mDestination[index] = dpixel;
+            }
         }
     }
     protected static int sThreshold = 1000;
@@ -55,7 +62,7 @@ public class Parallel extends RecursiveAction {
     public static void main(String[] args) throws Exception {
         String srcName = "world.jpg";
         File srcFile = new File(srcName);
-        BufferedImage image = ImageIO.read(srcFile);  
+        BufferedImage image = ImageIO.read(srcFile);
         BufferedImage grayImage = gray(image);
         String dstName = "world-gray.jpg";
         File dstFile = new File(dstName);
@@ -79,4 +86,20 @@ public class Parallel extends RecursiveAction {
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
         return dstImage;
     }
+
+    public static boolean isPrime(int num) {
+        if (num == 2 || num == 3) {
+            return true;
+        }
+        if (num % 2 == 0 || num % 3 == 0) {
+            return false;
+        }
+        for (int i = 3; i <= Math.sqrt(num); i += 2) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

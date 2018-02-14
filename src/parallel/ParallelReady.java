@@ -1,9 +1,7 @@
 package parallel;
 
-import com.sun.xml.internal.bind.v2.model.util.ArrayInfoUtil;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import javax.imageio.ImageIO;
