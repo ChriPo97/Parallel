@@ -34,13 +34,9 @@ public class Parallel extends RecursiveAction {
             float blue = pixel & 0xff;
             float gray = (float) ((red * 0.21) + (green * 0.72) + (blue * 0.07));
             if (isPrime((int) (red * green * blue * gray))) {
-                Random r = new Random();
-                int red1 = r.nextInt(256);
-                int green1 = r.nextInt(256);
-                int blue1 = r.nextInt(256);
-                int dpixel = ((red1 << 16)
-                        | (green1) << 8)
-                        | (blue1);
+                int dpixel = ((255 << 16)
+                        | (0) << 8)
+                        | (0);
                 mDestination[index] = dpixel;
             } else {
                 int dpixel = (((int) gray) << 16)
@@ -65,14 +61,24 @@ public class Parallel extends RecursiveAction {
     }
 
     public static void main(String[] args) throws Exception {
-        String srcName = "tiger.jpg";
+        long startTime = System.currentTimeMillis();
+        String srcName = "world2.jpg";
         File srcFile = new File(srcName);
         BufferedImage image = ImageIO.read(srcFile);
-        System.out.println("Einlesen fertig");
+        long endTime = System.currentTimeMillis();
+        System.out.println("Einlesen:  " + (endTime - startTime) + " milliseconds.");
+        
+        startTime = System.currentTimeMillis();
         BufferedImage grayImage = gray(image);
-        String dstName = "tiger-gray.jpg";
+        endTime = System.currentTimeMillis();
+        System.out.println("Rechnen:  " + (endTime - startTime) + " milliseconds.");
+        
+        startTime = System.currentTimeMillis();
+        String dstName = "world2-gray.jpg";
         File dstFile = new File(dstName);
         ImageIO.write(grayImage, "jpg", dstFile);   //Also: "TIFF"
+        endTime = System.currentTimeMillis();
+        System.out.println("Schreiben:  " + (endTime - startTime) + " milliseconds.");
     }
 
     public static BufferedImage gray(BufferedImage srcImage) {
@@ -82,11 +88,7 @@ public class Parallel extends RecursiveAction {
         int[] dst = new int[src.length];
         Parallel fb = new Parallel(src, 0, src.length, dst);
         ForkJoinPool pool = new ForkJoinPool();
-        long startTime = System.currentTimeMillis();
         pool.invoke(fb);
-        long endTime = System.currentTimeMillis();
-        System.out.println("Graying took " + (endTime - startTime)
-                + " milliseconds.");
         BufferedImage dstImage
                 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
