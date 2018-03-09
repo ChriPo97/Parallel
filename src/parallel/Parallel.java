@@ -2,6 +2,7 @@ package parallel;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
@@ -61,6 +62,12 @@ public class Parallel extends RecursiveAction {
     }
 
     public static void main(String[] args) throws Exception {
+        for(int i = 0; i < 10; i++) {
+            start();
+        }
+    }
+    
+    public static void start() throws IOException {
         long startTime = System.currentTimeMillis();
         String srcName = "world2.jpg";
         File srcFile = new File(srcName);

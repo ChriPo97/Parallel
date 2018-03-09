@@ -18,13 +18,30 @@ public class Imperativ {
     private static int[] mDestination;
 
     public static void main(String[] args) throws IOException {
-        String srcName = "tiger.jpg";
+        for(int i = 0; i < 10; i++) {
+            start();
+        }
+    }
+    
+    public static void start() throws IOException {
+        long startTime = System.currentTimeMillis();
+        String srcName = "world2.jpg";
         File srcFile = new File(srcName);
         BufferedImage image = ImageIO.read(srcFile);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Einlesen:  " + (endTime - startTime) + " milliseconds.");
+        
+        startTime = System.currentTimeMillis();
         BufferedImage grayImage = gray(image);
-        String dstName = "tiger-gray.jpg";
+        endTime = System.currentTimeMillis();
+        System.out.println("Rechnen:  " + (endTime - startTime) + " milliseconds.");
+        
+        startTime = System.currentTimeMillis();
+        String dstName = "world2-gray.jpg";
         File dstFile = new File(dstName);
         ImageIO.write(grayImage, "jpg", dstFile);   //Also: "TIFF"
+        endTime = System.currentTimeMillis();
+        System.out.println("Schreiben:  " + (endTime - startTime) + " milliseconds.");
     }
 
     private static BufferedImage gray(BufferedImage srcImage) {
@@ -36,11 +53,7 @@ public class Imperativ {
         mStart = 0;
         mLength = src.length;
         mDestination = dst;
-        long startTime = System.currentTimeMillis();
         computeDirectly();
-        long endTime = System.currentTimeMillis();
-        System.out.println("Graying took " + (endTime - startTime)
-                + " milliseconds.");
         BufferedImage dstImage
                 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         dstImage.setRGB(0, 0, w, h, dst, 0, w);
